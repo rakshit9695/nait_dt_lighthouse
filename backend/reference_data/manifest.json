@@ -1,0 +1,12 @@
+{
+  "datasets": [
+    {"id": "nrel_sam_pv", "url": "https://sam.nrel.gov", "sha256": "synthetic-seed", "kind": "pv-iv-curves"},
+    {"id": "epri_battery", "url": "https://www.epri.com", "sha256": "synthetic-seed", "kind": "lfp-cycling"},
+    {"id": "ieee_1547_2018", "url": "https://standards.ieee.org/standard/1547-2018.html", "sha256": "synthetic-seed", "kind": "ride-through-profiles"},
+    {"id": "victron_quattro", "url": "https://www.victronenergy.com", "sha256": "synthetic-seed", "kind": "inverter-curves"},
+    {"id": "ashrae_tc_9_9", "url": "https://tc0909.ashraetcs.org", "sha256": "synthetic-seed", "kind": "thermal-envelope"},
+    {"id": "aeso_lmp", "url": "https://www.aeso.ca", "sha256": "synthetic-seed", "kind": "hourly-LMP"},
+    {"id": "electricity_maps_alberta", "url": "https://www.electricitymaps.com", "sha256": "synthetic-seed", "kind": "carbon-intensity"},
+    {"id": "google_cluster_v3", "url": "https://github.com/google/cluster-data", "sha256": "synthetic-seed", "kind": "workload-traces"}
+  ]
+}

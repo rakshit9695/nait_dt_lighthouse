@@ -1,0 +1,41 @@
+# Defaults for the NAIT CGI digital twin (spec §2.3).
+# Each entry: value, unit, source, assumed (true/false), question_index (when assumed).
+defaults:
+  pv_sim.rated_power_w: {value: 15000, unit: W, source: CGI spec §2.2.1, assumed: false}
+  pv_sim.voc_ref_v:     {value: 900,   unit: V, source: CGI spec §2.2.1, assumed: false}
+  pv_sim.vmp_ref_v:     {value: 720,   unit: V, source: CGI spec §2.2.1, assumed: false}
+  pv_sim.isc_ref_a:     {value: 22,    unit: A, source: CGI spec §2.2.1, assumed: false}
+  pv_sim.imp_ref_a:     {value: 20.8,  unit: A, source: CGI spec §2.2.1, assumed: false}
+  pv_sim.diode_ideality: {value: 1.4, unit: '-', source: Questions_for_NAIT.pdf, assumed: true, question_index: 11, confidence_penalty: 0.05}
+  pv_sim.series_resistance_ohm: {value: 0.25, unit: ohm, source: Questions_for_NAIT.pdf, assumed: true, question_index: 12, confidence_penalty: 0.05}
+
+  inverter.fronius_rated_power_w: {value: 3800, unit: W, source: CGI spec §2.2.2, assumed: false}
+  inverter.quattro_rated_power_w: {value: 5000, unit: W, source: CGI spec §2.2.4, assumed: false}
+
+  battery.nominal_voltage_v: {value: 51.2, unit: V, source: CGI spec §2.2.3, assumed: false}
+  battery.capacity_ah:       {value: 100,  unit: Ah, source: CGI spec §2.2.3, assumed: false}
+  battery.r0_ohm:            {value: 0.015, unit: ohm, source: CGI spec §2.2.3, assumed: false}
+  battery.r1_ohm:            {value: 0.010, unit: ohm, source: CGI spec §2.2.3, assumed: false}
+  battery.c1_f:              {value: 2000, unit: F, source: CGI spec §2.2.3, assumed: false}
+  battery.max_current_a:     {value: 100,  unit: A, source: CGI spec §2.2.3, assumed: false}
+  battery.thermal_capacity_j_per_k: {value: 4000, unit: J/K, source: Questions_for_NAIT.pdf, assumed: true, question_index: 13, confidence_penalty: 0.04}
+  battery.thermal_conductance_w_per_k: {value: 2.0, unit: W/K, source: Questions_for_NAIT.pdf, assumed: true, question_index: 14, confidence_penalty: 0.04}
+
+  dcdc.rated_power_w:           {value: 2000, unit: W, source: Questions_for_NAIT.pdf, assumed: true, question_index: 1, confidence_penalty: 0.10}
+  dcdc.output_current_limit_a:  {value: 40, unit: A, source: CGI spec §2.2.6, assumed: false}
+
+  generator.rated_power_w: {value: 3000, unit: W, source: Questions_for_NAIT.pdf, assumed: true, question_index: 2, confidence_penalty: 0.10}
+  generator.peak_power_w:  {value: 4000, unit: W, source: CGI spec §2.2.7, assumed: false}
+  generator.fuel_tank_kg:  {value: 20,   unit: kg, source: Questions_for_NAIT.pdf, assumed: true, question_index: 3, confidence_penalty: 0.10}
+
+  panel.branch_trip_a: {value: 30, unit: A, source: Questions_for_NAIT.pdf, assumed: true, question_index: 4, confidence_penalty: 0.08}
+
+  data_center.it_avg_kw:  {value: 2.0, unit: kW, source: Questions_for_NAIT.pdf, assumed: true, question_index: 5, confidence_penalty: 0.06}
+  data_center.it_peak_kw: {value: 3.5, unit: kW, source: Questions_for_NAIT.pdf, assumed: true, question_index: 6, confidence_penalty: 0.06}
+  data_center.pue:        {value: 1.6, unit: ratio, source: Questions_for_NAIT.pdf, assumed: true, question_index: 7, confidence_penalty: 0.06}
+
+  grid.import_limit_w: {value: 10000, unit: W, source: Questions_for_NAIT.pdf, assumed: true, question_index: 8, confidence_penalty: 0.04}
+  grid.export_limit_w: {value: 5000,  unit: W, source: Questions_for_NAIT.pdf, assumed: true, question_index: 9, confidence_penalty: 0.04}
+
+  mts.generator_path_is_dc_support: {value: true, unit: bool, source: Questions_for_NAIT.pdf, assumed: true, question_index: 10, confidence_penalty: 0.08}
+  mts.atg_transfer_time_s: {value: 0.1, unit: s, source: Questions_for_NAIT.pdf, assumed: true, question_index: 15, confidence_penalty: 0.03}

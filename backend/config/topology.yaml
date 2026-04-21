@@ -1,0 +1,34 @@
+# SLD topology (spec §1.2). Coordinates are normalized [0,1] for the canvas.
+nodes:
+  - {id: pv_sim,      label: "Keysight N8937APV",   type: pv_sim,            x: 0.08, y: 0.18}
+  - {id: fronius,     label: "Fronius Primo 3.8-1", type: inverter,          x: 0.30, y: 0.18}
+  - {id: battery,     label: "Pytes V5 5.12 kWh",   type: battery,           x: 0.08, y: 0.42}
+  - {id: quattro,     label: "Victron Quattro",     type: bidir_inverter,    x: 0.30, y: 0.42}
+  - {id: cerbo,       label: "Cerbo GX",            type: system_controller, x: 0.30, y: 0.58}
+  - {id: dcdc,        label: "DC-DC Converter",     type: dcdc,              x: 0.08, y: 0.66}
+  - {id: generator,   label: "AlumaPower Gen",      type: generator,         x: 0.08, y: 0.82}
+  - {id: mts,         label: "Manual Transfer Sw",  type: mts,               x: 0.30, y: 0.82}
+  - {id: panel,       label: "240/120V Panel",      type: panel,             x: 0.52, y: 0.50}
+  - {id: data_center, label: "Data Center Load",    type: data_center,       x: 0.78, y: 0.30}
+  - {id: chroma,      label: "Chroma 61809",        type: load_sim,          x: 0.78, y: 0.50}
+  - {id: grid,        label: "Main Grid Tie",       type: grid_tie,          x: 0.78, y: 0.70}
+  - {id: plc,         label: "Site PLC",            type: plc,               x: 0.52, y: 0.10}
+edges:
+  - {from: pv_sim,    to: fronius,     kind: dc}
+  - {from: fronius,   to: panel,       kind: ac}
+  - {from: battery,   to: quattro,     kind: dc}
+  - {from: quattro,   to: mts,         kind: ac}
+  - {from: generator, to: dcdc,        kind: dc}
+  - {from: dcdc,      to: battery,     kind: dc}
+  - {from: mts,       to: panel,       kind: ac}
+  - {from: panel,     to: data_center, kind: ac}
+  - {from: panel,     to: chroma,      kind: ac}
+  - {from: panel,     to: grid,        kind: ac}
+  - {from: cerbo,     to: quattro,     kind: ctrl}
+  - {from: cerbo,     to: battery,     kind: ctrl}
+  - {from: plc,       to: fronius,     kind: ctrl}
+  - {from: plc,       to: quattro,     kind: ctrl}
+  - {from: plc,       to: generator,   kind: ctrl}
+  - {from: plc,       to: dcdc,        kind: ctrl}
+  - {from: plc,       to: mts,         kind: ctrl}
+  - {from: plc,       to: chroma,      kind: ctrl}
