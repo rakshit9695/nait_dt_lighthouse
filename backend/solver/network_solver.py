@@ -76,9 +76,13 @@ class NetworkSolver:
             "ambient_temp_C": drivers["ambient_temp_C"],
             "V_dc_command": self.fronius.state.get("V_dc_request", 720.0),
         })
+        # When the macrogrid is down, the Quattro forms a 240V split-phase microgrid,
+        # so the Fronius still has a valid AC reference (well within ride-through).
+        ac_voltage_ref = 240.0 if (drivers["grid_online"] or self.quattro.mode == "off-grid") \
+            else 120.0
         fronius = self.fronius.step(dt, {
             "P_dc_available": pv["P_dc"],
-            "V_grid_ac": 240.0 if drivers["grid_online"] else 120.0,
+            "V_grid_ac": ac_voltage_ref,
             "f_grid": 60.0,
             "P_ac_setpoint": 1.0,
         })
@@ -154,16 +158,29 @@ class NetworkSolver:
         })
 
         if grid["online"]:
+            # On-grid: if requested import exceeds the import limit, the grid clips
+            # `P_exchanged`, leaving an unmet AC deficit. Treat that as load shed
+            # rather than a model error so the energy balance closes cleanly.
+            unmet = ac_demand - (ac_supply + float(grid["P_exchanged"]))
+            if unmet > 1.0:
+                load_shed = unmet
+                ac_demand -= unmet
+                self.panel.faults = ["panel_load_shed_grid_limit"]
+            else:
+                load_shed = 0.0
             imbalance = ac_supply + float(grid["P_exchanged"]) - ac_demand
-            load_shed = 0.0
         else:
             # Off-grid: Quattro is the slack. If supply < demand, the difference is shed.
+            # If supply > demand, the surplus is curtailed (Fronius freq-shift back-off).
             if ac_supply + 1.0 < ac_demand:
                 load_shed = ac_demand - ac_supply
                 ac_demand = ac_supply
                 self.panel.faults = ["panel_load_shed_off_grid"]
             else:
                 load_shed = 0.0
+                if ac_supply > ac_demand + 1.0:
+                    self.panel.faults = ["pv_curtailed_off_grid"]
+                    ac_supply = ac_demand
             imbalance = ac_supply - ac_demand
 
         panel_branch_powers = {

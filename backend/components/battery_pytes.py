@@ -3,6 +3,8 @@ from __future__ import annotations
 
 from typing import Any
 
+import math
+
 from backend.components.base import ComponentModel
 from backend.configuration import get
 
@@ -38,18 +40,26 @@ class PytesBattery(ComponentModel):
         self.cycles_ah = 0.0
         self._update_state(0.0, lfp_ocv(self.soc))
 
-    def _bms_clip(self, I_req: float) -> float:
+    def _bms_clip(self, I_req: float, T_amb: float) -> float:
         I = max(-self.imax, min(self.imax, I_req))
         # convention: I>0 = discharge
         if self.soc <= 0.10 and I > 0:
             I = 0.0
         if self.soc >= 0.95 and I < 0:
             I = 0.0
+        # Thermal derating: linear taper to zero between 45C and 50C, hard stop above.
+        if self.T >= 50.0:
+            return 0.0
         if self.T > 45.0:
-            if I < 0:
-                I = 0.0
-            else:
-                I *= 0.5
+            I *= max(0.0, (50.0 - self.T) / 5.0)
+        # Thermal-feasibility cap: keep steady-state T_eq <= 48C given current ambient.
+        # T_eq = T_amb + I^2 * (r0+r1) / h.  Solve for |I|_max.
+        r_total = self.r0 + self.r1
+        if self.h > 0 and r_total > 0:
+            head = max(0.0, 48.0 - T_amb)
+            i_thermal_max = (head * self.h / r_total) ** 0.5
+            if abs(I) > i_thermal_max:
+                I = math.copysign(i_thermal_max, I)
         return I
 
     def _update_state(self, I: float, V: float) -> None:
@@ -71,7 +81,7 @@ class PytesBattery(ComponentModel):
         T_amb = float(inputs.get("ambient_temp_C", 25.0))
         ocv = lfp_ocv(self.soc)
         I_req = P_req / max(ocv, 1.0)
-        I = self._bms_clip(I_req)
+        I = self._bms_clip(I_req, T_amb)
         # discharge reduces SOC
         self.soc = max(0.10, min(0.95, self.soc - I * dt / (3600.0 * self.cap_ah)))
         # 1RC dynamics — closed-form to stay stable at any dt

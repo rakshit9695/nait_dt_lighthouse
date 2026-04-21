@@ -1,0 +1,166 @@
+{
+  "run_id": "569ff01c-28d0-404a-88d1-b043afaaa167",
+  "scenario_id": "_fuzz_0026",
+  "dt_confidence": 0.7467135523199652,
+  "components": [
+    {
+      "id": "pv_sim",
+      "C_i": 0.6070343883345852,
+      "physical_consistency": 0.9997830623834562,
+      "empirical_match": 0.0,
+      "assumption_density": 0.7142857142857143,
+      "details": {
+        "faults": [],
+        "n_assumed": 2
+      }
+    },
+    {
+      "id": "fronius",
+      "C_i": 0.624891531191728,
+      "physical_consistency": 0.9497830623834561,
+      "empirical_match": 0.0,
+      "assumption_density": 1.0,
+      "details": {
+        "faults": [
+          "ride_through_trip"
+        ],
+        "n_assumed": 0
+      }
+    },
+    {
+      "id": "battery",
+      "C_i": 0.9623081302855885,
+      "physical_consistency": 0.9997830623834562,
+      "empirical_match": 0.9997617116967441,
+      "assumption_density": 0.75,
+      "details": {
+        "faults": [],
+        "n_assumed": 2
+      }
+    },
+    {
+      "id": "quattro",
+      "C_i": 0.999393283015959,
+      "physical_consistency": 0.9997830623834562,
+      "empirical_match": 0.9985764337835169,
+      "assumption_density": 1.0,
+      "details": {
+        "faults": [],
+        "n_assumed": 0
+      }
+    },
+    {
+      "id": "cerbo",
+      "C_i": 0.9998915311917281,
+      "physical_consistency": 0.9997830623834562,
+      "empirical_match": 1.0,
+      "assumption_density": 1.0,
+      "details": {
+        "faults": [],
+        "n_assumed": 0
+      }
+    },
+    {
+      "id": "dcdc",
+      "C_i": 0.5748915311917281,
+      "physical_consistency": 0.9997830623834562,
+      "empirical_match": 0.0,
+      "assumption_density": 0.5,
+      "details": {
+        "faults": [],
+        "n_assumed": 1
+      }
+    },
+    {
+      "id": "generator",
+      "C_i": 0.6123915311917281,
+      "physical_consistency": 0.9497830623834561,
+      "empirical_match": 0.25,
+      "assumption_density": 0.33333333333333337,
+      "details": {
+        "faults": [
+          "fuel_empty"
+        ],
+        "n_assumed": 2
+      }
+    },
+    {
+      "id": "mts",
+      "C_i": 0.8498915311917281,
+      "physical_consistency": 0.9997830623834562,
+      "empirical_match": 1.0,
+      "assumption_density": 0.0,
+      "details": {
+        "faults": [],
+        "n_assumed": 2
+      }
+    },
+    {
+      "id": "panel",
+      "C_i": 0.774891531191728,
+      "physical_consistency": 0.8497830623834561,
+      "empirical_match": 1.0,
+      "assumption_density": 0.0,
+      "details": {
+        "faults": [
+          "grid_branch"
+        ],
+        "n_assumed": 1
+      }
+    },
+    {
+      "id": "chroma",
+      "C_i": 0.9998915311917281,
+      "physical_consistency": 0.9997830623834562,
+      "empirical_match": 1.0,
+      "assumption_density": 1.0,
+      "details": {
+        "faults": [],
+        "n_assumed": 0
+      }
+    },
+    {
+      "id": "data_center",
+      "C_i": 0.8498915311917281,
+      "physical_consistency": 0.9997830623834562,
+      "empirical_match": 1.0,
+      "assumption_density": 0.0,
+      "details": {
+        "faults": [],
+        "n_assumed": 3
+      }
+    },
+    {
+      "id": "grid",
+      "C_i": 0.47489153119172806,
+      "physical_consistency": 0.9497830623834561,
+      "empirical_match": 0.0,
+      "assumption_density": 0.0,
+      "details": {
+        "faults": [
+          "grid_outage"
+        ],
+        "n_assumed": 2
+      }
+    },
+    {
+      "id": "plc",
+      "C_i": 0.9998915311917281,
+      "physical_consistency": 0.9997830623834562,
+      "empirical_match": 1.0,
+      "assumption_density": 1.0,
+      "details": {
+        "faults": [],
+        "n_assumed": 0
+      }
+    }
+  ],
+  "system_metrics": {
+    "energy_balance_residual": 0.00010846880827191742,
+    "safety_violations": 3.0,
+    "thermal_violations_s": 10800.0,
+    "setpoint_rms_error_pct": 7.747550110307162,
+    "control_loop_latency_ms_p95": 50.0
+  },
+  "generated_at": "2026-04-21T08:43:59.601248Z"
+}

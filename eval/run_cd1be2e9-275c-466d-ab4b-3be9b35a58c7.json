@@ -1,0 +1,160 @@
+{
+  "run_id": "cd1be2e9-275c-466d-ab4b-3be9b35a58c7",
+  "scenario_id": "_fuzz_0008",
+  "dt_confidence": 0.8041530258464157,
+  "components": [
+    {
+      "id": "pv_sim",
+      "C_i": 0.6058014288064718,
+      "physical_consistency": 0.9973171433272294,
+      "empirical_match": 0.0,
+      "assumption_density": 0.7142857142857143,
+      "details": {
+        "faults": [],
+        "n_assumed": 2
+      }
+    },
+    {
+      "id": "fronius",
+      "C_i": 0.7536585716636145,
+      "physical_consistency": 0.9973171433272294,
+      "empirical_match": 0.2999999999999994,
+      "assumption_density": 1.0,
+      "details": {
+        "faults": [],
+        "n_assumed": 0
+      }
+    },
+    {
+      "id": "battery",
+      "C_i": 0.961117906647498,
+      "physical_consistency": 0.9973171433272294,
+      "empirical_match": 0.9998838142396662,
+      "assumption_density": 0.75,
+      "details": {
+        "faults": [],
+        "n_assumed": 2
+      }
+    },
+    {
+      "id": "quattro",
+      "C_i": 0.9986585716636147,
+      "physical_consistency": 0.9973171433272294,
+      "empirical_match": 1.0,
+      "assumption_density": 1.0,
+      "details": {
+        "faults": [],
+        "n_assumed": 0
+      }
+    },
+    {
+      "id": "cerbo",
+      "C_i": 0.9986585716636147,
+      "physical_consistency": 0.9973171433272294,
+      "empirical_match": 1.0,
+      "assumption_density": 1.0,
+      "details": {
+        "faults": [],
+        "n_assumed": 0
+      }
+    },
+    {
+      "id": "dcdc",
+      "C_i": 0.5736585716636147,
+      "physical_consistency": 0.9973171433272294,
+      "empirical_match": 0.0,
+      "assumption_density": 0.5,
+      "details": {
+        "faults": [],
+        "n_assumed": 1
+      }
+    },
+    {
+      "id": "generator",
+      "C_i": 0.6361585716636148,
+      "physical_consistency": 0.9973171433272294,
+      "empirical_match": 0.25,
+      "assumption_density": 0.33333333333333337,
+      "details": {
+        "faults": [],
+        "n_assumed": 2
+      }
+    },
+    {
+      "id": "mts",
+      "C_i": 0.8486585716636147,
+      "physical_consistency": 0.9973171433272294,
+      "empirical_match": 1.0,
+      "assumption_density": 0.0,
+      "details": {
+        "faults": [],
+        "n_assumed": 2
+      }
+    },
+    {
+      "id": "panel",
+      "C_i": 0.7736585716636146,
+      "physical_consistency": 0.8473171433272294,
+      "empirical_match": 1.0,
+      "assumption_density": 0.0,
+      "details": {
+        "faults": [
+          "grid_branch"
+        ],
+        "n_assumed": 1
+      }
+    },
+    {
+      "id": "chroma",
+      "C_i": 0.9986585716636147,
+      "physical_consistency": 0.9973171433272294,
+      "empirical_match": 1.0,
+      "assumption_density": 1.0,
+      "details": {
+        "faults": [],
+        "n_assumed": 0
+      }
+    },
+    {
+      "id": "data_center",
+      "C_i": 0.8486585716636147,
+      "physical_consistency": 0.9973171433272294,
+      "empirical_match": 1.0,
+      "assumption_density": 0.0,
+      "details": {
+        "faults": [],
+        "n_assumed": 3
+      }
+    },
+    {
+      "id": "grid",
+      "C_i": 0.8486585716636147,
+      "physical_consistency": 0.9973171433272294,
+      "empirical_match": 1.0,
+      "assumption_density": 0.0,
+      "details": {
+        "faults": [],
+        "n_assumed": 2
+      }
+    },
+    {
+      "id": "plc",
+      "C_i": 0.9986585716636147,
+      "physical_consistency": 0.9973171433272294,
+      "empirical_match": 1.0,
+      "assumption_density": 1.0,
+      "details": {
+        "faults": [],
+        "n_assumed": 0
+      }
+    }
+  ],
+  "system_metrics": {
+    "energy_balance_residual": 0.0013414283363853035,
+    "safety_violations": 1.0,
+    "thermal_violations_s": 3600.0,
+    "setpoint_rms_error_pct": 2.484318398904216,
+    "control_loop_latency_ms_p95": 50.0
+  },
+  "generated_at": "2026-04-21T08:43:58.882912Z"
+}

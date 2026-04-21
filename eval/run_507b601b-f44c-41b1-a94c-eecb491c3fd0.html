@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<title>NAIT CGI DT Report — 507b601b-f44c-41b1-a94c-eecb491c3fd0</title>
+<style>
+  body { font-family: ui-sans-serif, system-ui, sans-serif; background:#fafafa; color:#111; margin:24px; }
+  table { border-collapse: collapse; width:100%; margin-bottom:24px; }
+  th,td { border:1px solid #ddd; padding:6px 8px; font-size:13px; text-align:left; }
+  th { background:#f0f0f0; }
+  .tile { border:2px solid #111; padding:18px 26px; display:inline-block; font-size:34px; margin:0 0 24px 0; font-family: ui-monospace, monospace; }
+  h2 { margin-top: 32px; font-size:14px; text-transform:uppercase; letter-spacing:0.05em; }
+  .muted { color:#666; font-size:12px; }
+</style></head>
+<body>
+  <div class="tile">DT Confidence: 0.806</div>
+  <div class="muted">Run 507b601b-f44c-41b1-a94c-eecb491c3fd0 · Scenario _fuzz_0148 · Generated 2026-04-21T08:48:43.868837Z</div>
+
+  <h2>System metrics</h2>
+  <table><tbody>
+  
+    <tr><th>energy_balance_residual</th><td>0.0000</td></tr>
+  
+    <tr><th>safety_violations</th><td>0.0000</td></tr>
+  
+    <tr><th>thermal_violations_s</th><td>18000.0000</td></tr>
+  
+    <tr><th>setpoint_rms_error_pct</th><td>8.9389</td></tr>
+  
+    <tr><th>control_loop_latency_ms_p95</th><td>50.0000</td></tr>
+  
+  </tbody></table>
+
+  <h2>Per-component confidence</h2>
+  <table>
+    <thead><tr><th>id</th><th>C_i</th><th>physical</th><th>empirical</th><th>assumption density</th><th>faults</th></tr></thead>
+    <tbody>
+    
+      <tr>
+        <td>pv_sim</td>
+        <td>0.607</td>
+        <td>1.000</td>
+        <td>0.000</td>
+        <td>0.714</td>
+        <td></td>
+      </tr>
+    
+      <tr>
+        <td>fronius</td>
+        <td>0.755</td>
+        <td>1.000</td>
+        <td>0.300</td>
+        <td>1.000</td>
+        <td></td>
+      </tr>
+    
+      <tr>
+        <td>battery</td>
+        <td>0.962</td>
+        <td>1.000</td>
+        <td>1.000</td>
+        <td>0.750</td>
+        <td></td>
+      </tr>
+    
+      <tr>
+        <td>quattro</td>
+        <td>1.000</td>
+        <td>1.000</td>
+        <td>1.000</td>
+        <td>1.000</td>
+        <td></td>
+      </tr>
+    
+      <tr>
+        <td>cerbo</td>
+        <td>1.000</td>
+        <td>1.000</td>
+        <td>1.000</td>
+        <td>1.000</td>
+        <td></td>
+      </tr>
+    
+      <tr>
+        <td>dcdc</td>
+        <td>0.575</td>
+        <td>1.000</td>
+        <td>0.000</td>
+        <td>0.500</td>
+        <td></td>
+      </tr>
+    
+      <tr>
+        <td>generator</td>
+        <td>0.638</td>
+        <td>1.000</td>
+        <td>0.250</td>
+        <td>0.333</td>
+        <td></td>
+      </tr>
+    
+      <tr>
+        <td>mts</td>
+        <td>0.850</td>
+        <td>1.000</td>
+        <td>1.000</td>
+        <td>0.000</td>
+        <td></td>
+      </tr>
+    
+      <tr>
+        <td>panel</td>
+        <td>0.775</td>
+        <td>0.850</td>
+        <td>1.000</td>
+        <td>0.000</td>
+        <td>grid_branch</td>
+      </tr>
+    
+      <tr>
+        <td>chroma</td>
+        <td>1.000</td>
+        <td>1.000</td>
+        <td>1.000</td>
+        <td>1.000</td>
+        <td></td>
+      </tr>
+    
+      <tr>
+        <td>data_center</td>
+        <td>0.850</td>
+        <td>1.000</td>
+        <td>1.000</td>
+        <td>0.000</td>
+        <td></td>
+      </tr>
+    
+      <tr>
+        <td>grid</td>
+        <td>0.850</td>
+        <td>1.000</td>
+        <td>1.000</td>
+        <td>0.000</td>
+        <td></td>
+      </tr>
+    
+      <tr>
+        <td>plc</td>
+        <td>1.000</td>
+        <td>1.000</td>
+        <td>1.000</td>
+        <td>1.000</td>
+        <td></td>
+      </tr>
+    
+    </tbody>
+  </table>
+</body></html>
