@@ -25,6 +25,23 @@ function nodePowerW(type: string, state: any): number | null {
   }
 }
 
+// Peak |P| across the run for a node — exposes intermittently-active
+// components (Quattro, generator, DC-DC) that would read 0 W on the final step.
+function peakPowerW(type: string, series: any[]): number | null {
+  if (!series || series.length === 0) return null;
+  let peak = 0;
+  let signed = 0;
+  for (const s of series) {
+    const v = nodePowerW(type, s);
+    if (v == null) continue;
+    if (Math.abs(v) > peak) {
+      peak = Math.abs(v);
+      signed = v;
+    }
+  }
+  return peak > 0.5 ? signed : 0;
+}
+
 export default function SLDCanvas() {
   const topology = useStore((s) => s.topology);
   const components = useStore((s) => s.components);
@@ -33,6 +50,7 @@ export default function SLDCanvas() {
   const setSelected = useStore((s) => s.setSelected);
   const storyMode = useStore((s) => s.storyMode);
   const storyStep = useStore((s) => s.storyStep);
+  const runResult = useStore((s) => s.runResult);
   const [hoverId, setHoverId] = useState<string | null>(null);
 
   const revealed = useMemo(
@@ -50,11 +68,26 @@ export default function SLDCanvas() {
     return m;
   }, [topology]);
 
+  // When a scenario run exists, derive PEAK |P| flows across the run so the
+  // SLD reflects what the system *did*, not just its (often-idle) final step.
+  const displayFlows = useMemo(() => {
+    if (!runResult?.flows?.length) return flows;
+    const peak: Record<string, { from: string; to: string; P_W: number }> = {};
+    for (const step of runResult.flows as any[][]) {
+      for (const f of step) {
+        const k = `${f.from}|${f.to}`;
+        const cur = peak[k]?.P_W ?? 0;
+        if (Math.abs(f.P_W) > Math.abs(cur)) peak[k] = { from: f.from, to: f.to, P_W: f.P_W };
+      }
+    }
+    return Object.values(peak);
+  }, [runResult, flows]);
+
   const flowMaxAbs = useMemo(() => {
     let m = 1;
-    for (const f of flows) m = Math.max(m, Math.abs(Number(f.P_W) || 0));
+    for (const f of displayFlows) m = Math.max(m, Math.abs(Number(f.P_W) || 0));
     return m;
-  }, [flows]);
+  }, [displayFlows]);
 
   if (!topology) return <div style={{ padding: 18 }}>Loading topology…</div>;
 
@@ -84,7 +117,7 @@ export default function SLDCanvas() {
         })}
 
         {/* live power flows */}
-        {flows.filter((f: any) => Math.abs(f.P_W) > 50).map((f: any, i: number) => {
+        {displayFlows.filter((f: any) => Math.abs(f.P_W) > 50).map((f: any, i: number) => {
           const a = nodeMap[f.from], b = nodeMap[f.to];
           if (!a || !b) return null;
           if (revealed && (!revealed.has(f.from) || !revealed.has(f.to))) return null;
@@ -113,7 +146,11 @@ export default function SLDCanvas() {
           const c = components[n.id];
           const fault = (c?.faults || []).length > 0;
           const Icon = iconForType(n.type);
-          const pw = nodePowerW(n.type, c?.state);
+          const liveP = nodePowerW(n.type, c?.state);
+          const runSeries = runResult?.series?.[n.id];
+          const peakP = runSeries ? peakPowerW(n.type, runSeries) : null;
+          const pw = peakP != null && Math.abs(peakP) > Math.abs(liveP ?? 0) ? peakP : liveP;
+          const isPeak = peakP != null && pw === peakP && Math.abs(peakP) > 1;
           if (revealed && !revealed.has(n.id)) return null;
           const cur = currentStoryId === n.id;
           return (
@@ -130,7 +167,7 @@ export default function SLDCanvas() {
               </g>
               <text x={6} y={-4} className="node-label">{n.label || n.id}</text>
               <text x={6} y={9} className="node-sub">
-                {pw == null ? n.type : fmtPower(pw)}
+                {pw == null ? n.type : (isPeak ? `${fmtPower(pw)} pk` : fmtPower(pw))}
               </text>
               {fault && (
                 <g transform="translate(46,-18)">

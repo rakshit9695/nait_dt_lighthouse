@@ -151,9 +151,20 @@ def run_canned(sim) -> None:
             traceback.print_exc()
             continue
         s = validate_run(sim, sc.id, summary)
+        # Quattro must be active in every scenario (it's the storage interface)
+        # — we measure by AC peak.
+        q_peaks = [abs(float(x.get("P_ac", 0))) for x in summary.series.get("quattro", [])]
+        if q_peaks and max(q_peaks) < 50.0:
+            report(sc.id, "ERROR",
+                   f"quattro never delivered |P_ac|>50 W (peak {max(q_peaks):.0f}) — battery path idle")
+        # Generator+DCDC: must fire whenever grid is offline AND SOC drops.
+        if sc.drivers.grid_online and not all(sc.drivers.grid_online):
+            g_peaks = [abs(float(x.get("P_dc", 0))) for x in summary.series.get("generator", [])]
+            if g_peaks and max(g_peaks) < 50.0:
+                report(sc.id, "WARN", "generator never started despite grid outage hours")
         print(f"  {sc.id:24} dt_conf={s['dt_confidence']:.3f} "
               f"resid={s['energy_residual_mean']:.4%} "
-              f"active={len(s['active'])}/13 "
+              f"q_peak={max(q_peaks) if q_peaks else 0:.0f}W "
               f"in {time.time()-t0:.1f}s")
 
 
