@@ -108,6 +108,8 @@ class NetworkSolver:
             "data_center": dc,
             "fronius": fronius,
             "grid": grid_pre,
+            "generator": self.generator.get_state(),
+            "hour_of_day": ts.hour,
             "policy": policy,
         }
         plc = self.plc.step(dt, plc_ctx)
@@ -116,8 +118,19 @@ class NetworkSolver:
         # 3. Generator → DC-DC → battery DC bus
         gen = self.generator.step(dt, {"enable": cmds["generator_enable"],
                                         "P_request_W": cmds["generator_request_w"]})
-        dcdc = self.dcdc.step(dt, {"enable": cmds["dcdc_enable"], "V_in": gen["V_dc"],
-                                    "P_in_available_W": gen["P_dc"], "V_out_command": 51.2})
+        # When the generator is producing power, DC-DC relays gen → battery (charging).
+        # Otherwise DC-DC sources a small auxiliary DC house load (instrumentation,
+        # lighting, controls) from the battery so the DC distribution path is always
+        # observable on the SLD and produces realistic, non-zero readings.
+        dc_aux_load_w = float(cmds.get("dc_aux_load_w", 0.0))
+        dcdc_from_battery = gen["P_dc"] < 50.0 and bool(cmds["dcdc_enable"]) and dc_aux_load_w > 0.0
+        if dcdc_from_battery:
+            dcdc = self.dcdc.step(dt, {"enable": True, "V_in": 51.2,
+                                        "P_in_available_W": dc_aux_load_w,
+                                        "V_out_command": 51.2})
+        else:
+            dcdc = self.dcdc.step(dt, {"enable": cmds["dcdc_enable"], "V_in": gen["V_dc"],
+                                        "P_in_available_W": gen["P_dc"], "V_out_command": 51.2})
         mts = self.mts.step(dt, {"position_command": cmds["mts_position"], "manual_override": False})
 
         # 4. Quattro sets demanded battery flow
@@ -129,13 +142,17 @@ class NetworkSolver:
         })
         # Battery: combine quattro DC draw and dcdc charging contribution
         # quattro P_dc convention: + draws from DC bus (=battery discharges); - pushes to battery
-        bat_request = float(quattro["P_dc"]) - float(dcdc["P_out"])
+        if dcdc_from_battery:
+            # DCDC is drawing from the battery to feed aux DC loads
+            bat_request = float(quattro["P_dc"]) + float(dcdc["P_in"])
+        else:
+            bat_request = float(quattro["P_dc"]) - float(dcdc["P_out"])
         battery = self.battery.step(dt, {"P_bat_request_W": bat_request,
                                           "ambient_temp_C": drivers["ambient_temp_C"]})
 
         # Reconcile if battery couldn't deliver/absorb
         actual_bat_p = float(battery["P_dc"])
-        achievable = actual_bat_p + float(dcdc["P_out"])
+        achievable = actual_bat_p + (0.0 if dcdc_from_battery else float(dcdc["P_out"]))
         if quattro["P_dc"] != 0:
             scale = max(0.0, min(1.0, abs(achievable) / max(abs(quattro["P_dc"]), 1.0)))
             quattro["P_ac"] *= scale
@@ -194,11 +211,17 @@ class NetworkSolver:
         })
 
         records = self._records(ts)
+        if dcdc_from_battery:
+            dcdc_flow = {"from": "battery", "to": "dcdc", "P_W": float(dcdc["P_in"])}
+            gen_flow = {"from": "generator", "to": "dcdc", "P_W": float(gen["P_dc"])}
+        else:
+            dcdc_flow = {"from": "dcdc", "to": "battery", "P_W": float(dcdc["P_out"])}
+            gen_flow = {"from": "generator", "to": "dcdc", "P_W": float(gen["P_dc"])}
         flows = [
             {"from": "pv_sim", "to": "fronius", "P_W": float(pv["P_dc"])},
             {"from": "fronius", "to": "panel", "P_W": float(fronius["P_ac"])},
-            {"from": "generator", "to": "dcdc", "P_W": float(gen["P_dc"])},
-            {"from": "dcdc", "to": "battery", "P_W": float(dcdc["P_out"])},
+            gen_flow,
+            dcdc_flow,
             {"from": "battery", "to": "quattro", "P_W": float(battery["P_dc"])},
             {"from": "quattro", "to": "panel", "P_W": -float(quattro["P_ac"])},
             {"from": "panel", "to": "data_center", "P_W": float(dc["P_total"])},
