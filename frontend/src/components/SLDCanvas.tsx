@@ -18,7 +18,7 @@ function nodePowerW(type: string, state: any): number | null {
     case "bidir_inverter": return Number(state.P_ac ?? 0);
     case "generator": return Number(state.P_dc ?? 0);
     case "data_center": return Number(state.P_total ?? 0);
-    case "load_sim": return Number(state.P_load_W ?? state.P_load ?? 0);
+    case "load_sim": return Number(state.P ?? state.P_load_W ?? state.P_load ?? 0);
     case "grid_tie": return Number(state.P_exchanged ?? 0);
     case "dcdc": return Number(state.P_out ?? state.P_in ?? 0);
     default: return null;

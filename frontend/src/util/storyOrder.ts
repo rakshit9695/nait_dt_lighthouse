@@ -121,7 +121,7 @@ export const STORY_ORDER: StoryStep[] = [
       "The Chroma 61809 is a programmable AC load that emulates other facility loads driven by the scenario. It lets us stress the panel with realistic, time-varying demand independent of the data-center model.",
     metrics: (run, dtH) => {
       const c = run?.series?.chroma || [];
-      const e = sumWh(c, "P_load_W", dtH) || sumWh(c, "P_load", dtH);
+      const e = sumWh(c, "P", dtH) || sumWh(c, "P_load_W", dtH) || sumWh(c, "P_load", dtH);
       return [{ label: "Load energy", value: fmtE(Math.abs(e)) }];
     },
   },
