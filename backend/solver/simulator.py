@@ -92,6 +92,15 @@ class SimulatorService:
         for h in range(sc.horizon_hours):
             wm = sc.drivers.workload_mix[h].mix if h < len(sc.drivers.workload_mix) else \
                 {"web_serving": 1.0}
+            # chroma_load_kW: optional. If absent, synthesize a plausible facility
+            # auxiliary load (lighting, HVAC, etc) shaped on time-of-day.
+            if h < len(sc.drivers.chroma_load_kW):
+                chroma_kw = float(sc.drivers.chroma_load_kW[h])
+            else:
+                hour_of_day = h % 24
+                # 0.4 kW base + up to 1.0 kW daytime bump (08:00-20:00)
+                bump = 1.0 if 8 <= hour_of_day <= 20 else 0.0
+                chroma_kw = 0.4 + 0.6 * bump
             drivers = {
                 "hour": h,
                 "irradiance_W_m2": sc.drivers.irradiance_W_m2[h],
@@ -101,6 +110,7 @@ class SimulatorService:
                 "IT_load_kW": sc.drivers.IT_load_kW[h],
                 "grid_online": sc.drivers.grid_online[h],
                 "workload_mix": wm,
+                "chroma_load_kW": chroma_kw,
             }
             recs, summary = solver.step(ts, dt, drivers, sc.control_policy)
             all_records.extend(recs)

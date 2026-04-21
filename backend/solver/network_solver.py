@@ -88,7 +88,8 @@ class NetworkSolver:
             "hour": drivers["hour"],
             "workload_mix": drivers["workload_mix"],
         })
-        chroma = self.chroma.step(dt, {"mode": "load", "P_command_W": 0.0,
+        chroma = self.chroma.step(dt, {"mode": "load",
+                                        "P_command_W": float(drivers.get("chroma_load_kW", 0.0)) * 1000.0,
                                         "V_command": 240.0, "f_command": 60.0})
         grid_pre = self.grid.step(dt, {
             "online": drivers["grid_online"],

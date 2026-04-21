@@ -33,11 +33,17 @@ def rule_baseline_policy(ctx: dict[str, Any]) -> dict[str, Any]:
             mts_pos = "generator"
             quattro_cmd = -min(max(deficit - gen_req, 0.0), 2500.0)
     else:
-        # Grid-tied: charge when SOC<50% and PV surplus, discharge when load > PV+2kW and SOC>70%
-        if soc < 0.50 and pv_p > load:
-            quattro_cmd = +min(pv_p - load, 2000.0)
-        elif soc > 0.70 and deficit > 2000.0:
-            quattro_cmd = -min(deficit, 3000.0)
+        # Grid-tied: keep the battery actively cycling so the storage path is
+        # visible. Charge whenever PV surplus exists and SOC headroom remains;
+        # discharge whenever a deficit exists and the battery has reserve.
+        surplus = pv_p - load
+        if surplus > 100.0 and soc < 0.95:
+            # Soft taper near full: scale charge by remaining headroom
+            headroom = max(0.0, (0.95 - soc) / 0.45)
+            quattro_cmd = +min(surplus, 3000.0) * min(1.0, max(0.2, headroom))
+        elif deficit > 100.0 and soc > 0.25:
+            reserve = max(0.0, (soc - 0.25) / 0.45)
+            quattro_cmd = -min(deficit, 3000.0) * min(1.0, max(0.2, reserve))
 
     return {
         "fronius_setpoint_pct": 1.0,

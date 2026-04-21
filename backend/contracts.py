@@ -72,6 +72,7 @@ class ScenarioDrivers(BaseModel):
     IT_load_kW: list[float]
     grid_online: list[bool]
     workload_mix: list[WorkloadHourMix]
+    chroma_load_kW: list[float] = Field(default_factory=list)
 
 
 class ScenarioInitial(BaseModel):
