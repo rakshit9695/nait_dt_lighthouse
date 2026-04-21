@@ -1,5 +1,6 @@
 const TOKEN = (import.meta as any).env?.VITE_DT_TOKEN || "dev-token";
-const BASE = "/api/v1";
+const API_BASE = (import.meta as any).env?.VITE_API_BASE || "";
+const BASE = `${API_BASE}/api/v1`;
 
 async function req<T>(path: string, init?: RequestInit): Promise<T> {
   const r = await fetch(BASE + path, {

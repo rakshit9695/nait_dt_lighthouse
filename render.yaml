@@ -1,0 +1,16 @@
+# Render blueprint — deploys the FastAPI backend as a free Web Service.
+# Push to GitHub, then in Render: New + → Blueprint → point at this repo.
+services:
+  - type: web
+    name: nait-dt-backend
+    runtime: docker
+    plan: free
+    region: oregon
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: PORT
+        value: 8000
+      - key: PYTHONPATH
+        value: /app

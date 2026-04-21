@@ -1,0 +1,14 @@
+frontend
+node_modules
+**/__pycache__
+**/*.pyc
+.pytest_cache
+.venv
+venv
+.git
+.github
+dist
+build
+eval
+docker-compose.yml
+.vercel
